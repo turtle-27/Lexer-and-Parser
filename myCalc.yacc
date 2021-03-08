@@ -8,7 +8,7 @@
     CONST | NOT | AND | OR | XOR | EQUALS
 |   IMPLIES | IF | THEN | ELSE | LPAREN | RPAREN | EOF | TERM
 
-%nonterm program | statement | formula | binop
+%nonterm program | statement | formula | binop | temp
 
 %pos int
 
@@ -26,10 +26,13 @@
 %verbose
 
 %%
-program: statement (statement) 
-     
+program: temp statement (temp statement)
+        | statement (statement)
 
-statement: formula (formula)
+temp: temp statement (temp statement)
+    | statement (statement)
+    
+statement: formula TERM (formula TERM)
 
 formula: CONST (CONST)
     |   NOT formula (NOT formula)
