@@ -1,21 +1,23 @@
 5 shift/reduce conflicts
 
-error:  state 17: shift/reduce conflict (shift IMPLIES, reduce by rule 7)
-error:  state 17: shift/reduce conflict (shift EQUALS, reduce by rule 7)
-error:  state 17: shift/reduce conflict (shift XOR, reduce by rule 7)
-error:  state 17: shift/reduce conflict (shift OR, reduce by rule 7)
-error:  state 17: shift/reduce conflict (shift AND, reduce by rule 7)
+error:  state 20: shift/reduce conflict (shift IMPLIES, reduce by rule 8)
+error:  state 20: shift/reduce conflict (shift EQUALS, reduce by rule 8)
+error:  state 20: shift/reduce conflict (shift XOR, reduce by rule 8)
+error:  state 20: shift/reduce conflict (shift OR, reduce by rule 8)
+error:  state 20: shift/reduce conflict (shift AND, reduce by rule 8)
 
 state 0:
 
 	program : . temp statement 
 	program : . statement 
 
-	CONST	shift 6
-	NOT	shift 5
-	IF	shift 4
+	CONST	shift 8
+	ID	shift 7
+	NOT	shift 6
+	IF	shift 5
+	LPAREN	shift 4
 
-	program	goto 23
+	program	goto 27
 	statement	goto 3
 	formula	goto 2
 	temp	goto 1
@@ -28,11 +30,13 @@ state 1:
 	program : temp . statement 
 	temp : temp . statement 
 
-	CONST	shift 6
-	NOT	shift 5
-	IF	shift 4
+	CONST	shift 8
+	ID	shift 7
+	NOT	shift 6
+	IF	shift 5
+	LPAREN	shift 4
 
-	statement	goto 7
+	statement	goto 9
 	formula	goto 2
 
 	.	error
@@ -44,14 +48,14 @@ state 2:
 	formula : formula . binop formula 
 	formula : formula . IMPLIES formula 
 
-	AND	shift 14
-	OR	shift 13
-	XOR	shift 12
-	EQUALS	shift 11
-	IMPLIES	shift 10
-	TERM	shift 9
+	AND	shift 16
+	OR	shift 15
+	XOR	shift 14
+	EQUALS	shift 13
+	IMPLIES	shift 12
+	TERM	shift 11
 
-	binop	goto 8
+	binop	goto 10
 
 	.	error
 
@@ -62,8 +66,10 @@ state 3:
 	temp : statement .  (reduce by rule 3)
 
 	CONST	reduce by rule 3
+	ID	reduce by rule 3
 	NOT	reduce by rule 3
 	IF	reduce by rule 3
+	LPAREN	reduce by rule 3
 	EOF	reduce by rule 1
 
 
@@ -72,31 +78,59 @@ state 3:
 
 state 4:
 
-	formula : IF . formula THEN formula ELSE formula 
+	formula : LPAREN . formula RPAREN 
 
-	CONST	shift 6
-	NOT	shift 5
-	IF	shift 4
+	CONST	shift 8
+	ID	shift 7
+	NOT	shift 6
+	IF	shift 5
+	LPAREN	shift 4
 
-	formula	goto 15
+	formula	goto 17
 
 	.	error
 
 
 state 5:
 
-	formula : NOT . formula 
+	formula : IF . formula THEN formula ELSE formula 
 
-	CONST	shift 6
-	NOT	shift 5
-	IF	shift 4
+	CONST	shift 8
+	ID	shift 7
+	NOT	shift 6
+	IF	shift 5
+	LPAREN	shift 4
 
-	formula	goto 16
+	formula	goto 18
 
 	.	error
 
 
 state 6:
+
+	formula : NOT . formula 
+
+	CONST	shift 8
+	ID	shift 7
+	NOT	shift 6
+	IF	shift 5
+	LPAREN	shift 4
+
+	formula	goto 19
+
+	.	error
+
+
+state 7:
+
+	formula : ID .  (reduce by rule 6)
+
+
+
+	.	reduce by rule 6
+
+
+state 8:
 
 	formula : CONST .  (reduce by rule 5)
 
@@ -105,34 +139,38 @@ state 6:
 	.	reduce by rule 5
 
 
-state 7:
+state 9:
 
 	program : temp statement .  (reduce by rule 0)
 	temp : temp statement .  (reduce by rule 2)
 
 	CONST	reduce by rule 2
+	ID	reduce by rule 2
 	NOT	reduce by rule 2
 	IF	reduce by rule 2
+	LPAREN	reduce by rule 2
 	EOF	reduce by rule 0
 
 
 	.	error
 
 
-state 8:
+state 10:
 
 	formula : formula binop . formula 
 
-	CONST	shift 6
-	NOT	shift 5
-	IF	shift 4
+	CONST	shift 8
+	ID	shift 7
+	NOT	shift 6
+	IF	shift 5
+	LPAREN	shift 4
 
-	formula	goto 17
+	formula	goto 20
 
 	.	error
 
 
-state 9:
+state 11:
 
 	statement : formula TERM .  (reduce by rule 4)
 
@@ -141,186 +179,219 @@ state 9:
 	.	reduce by rule 4
 
 
-state 10:
+state 12:
 
 	formula : formula IMPLIES . formula 
 
-	CONST	shift 6
-	NOT	shift 5
-	IF	shift 4
+	CONST	shift 8
+	ID	shift 7
+	NOT	shift 6
+	IF	shift 5
+	LPAREN	shift 4
 
-	formula	goto 18
+	formula	goto 21
 
 	.	error
 
 
-state 11:
+state 13:
 
-	binop : EQUALS .  (reduce by rule 13)
+	binop : EQUALS .  (reduce by rule 15)
+
+
+
+	.	reduce by rule 15
+
+
+state 14:
+
+	binop : XOR .  (reduce by rule 14)
+
+
+
+	.	reduce by rule 14
+
+
+state 15:
+
+	binop : OR .  (reduce by rule 13)
 
 
 
 	.	reduce by rule 13
 
 
-state 12:
+state 16:
 
-	binop : XOR .  (reduce by rule 12)
+	binop : AND .  (reduce by rule 12)
 
 
 
 	.	reduce by rule 12
 
 
-state 13:
-
-	binop : OR .  (reduce by rule 11)
-
-
-
-	.	reduce by rule 11
-
-
-state 14:
-
-	binop : AND .  (reduce by rule 10)
-
-
-
-	.	reduce by rule 10
-
-
-state 15:
-
-	formula : formula . binop formula 
-	formula : formula . IMPLIES formula 
-	formula : IF formula . THEN formula ELSE formula 
-
-	AND	shift 14
-	OR	shift 13
-	XOR	shift 12
-	EQUALS	shift 11
-	IMPLIES	shift 10
-	THEN	shift 19
-
-	binop	goto 8
-
-	.	error
-
-
-state 16:
-
-	formula : NOT formula .  (reduce by rule 6)
-	formula : formula . binop formula 
-	formula : formula . IMPLIES formula 
-
-
-	binop	goto 8
-
-	.	reduce by rule 6
-
-error:  state 17: shift/reduce conflict (shift IMPLIES, reduce by rule 7)
-error:  state 17: shift/reduce conflict (shift EQUALS, reduce by rule 7)
-error:  state 17: shift/reduce conflict (shift XOR, reduce by rule 7)
-error:  state 17: shift/reduce conflict (shift OR, reduce by rule 7)
-error:  state 17: shift/reduce conflict (shift AND, reduce by rule 7)
-
 state 17:
 
 	formula : formula . binop formula 
-	formula : formula binop formula .  (reduce by rule 7)
 	formula : formula . IMPLIES formula 
+	formula : LPAREN formula . RPAREN 
 
-	AND	shift 14
-	OR	shift 13
-	XOR	shift 12
-	EQUALS	shift 11
-	IMPLIES	shift 10
+	AND	shift 16
+	OR	shift 15
+	XOR	shift 14
+	EQUALS	shift 13
+	IMPLIES	shift 12
+	RPAREN	shift 22
 
-	binop	goto 8
+	binop	goto 10
 
-	.	reduce by rule 7
+	.	error
 
 
 state 18:
 
 	formula : formula . binop formula 
 	formula : formula . IMPLIES formula 
-	formula : formula IMPLIES formula .  (reduce by rule 8)
+	formula : IF formula . THEN formula ELSE formula 
 
-	AND	shift 14
-	OR	shift 13
-	XOR	shift 12
-	EQUALS	shift 11
-	IMPLIES	shift 10
+	AND	shift 16
+	OR	shift 15
+	XOR	shift 14
+	EQUALS	shift 13
+	IMPLIES	shift 12
+	THEN	shift 23
 
-	binop	goto 8
-
-	.	reduce by rule 8
-
-
-state 19:
-
-	formula : IF formula THEN . formula ELSE formula 
-
-	CONST	shift 6
-	NOT	shift 5
-	IF	shift 4
-
-	formula	goto 20
+	binop	goto 10
 
 	.	error
 
 
+state 19:
+
+	formula : NOT formula .  (reduce by rule 7)
+	formula : formula . binop formula 
+	formula : formula . IMPLIES formula 
+
+
+	binop	goto 10
+
+	.	reduce by rule 7
+
+error:  state 20: shift/reduce conflict (shift IMPLIES, reduce by rule 8)
+error:  state 20: shift/reduce conflict (shift EQUALS, reduce by rule 8)
+error:  state 20: shift/reduce conflict (shift XOR, reduce by rule 8)
+error:  state 20: shift/reduce conflict (shift OR, reduce by rule 8)
+error:  state 20: shift/reduce conflict (shift AND, reduce by rule 8)
+
 state 20:
+
+	formula : formula . binop formula 
+	formula : formula binop formula .  (reduce by rule 8)
+	formula : formula . IMPLIES formula 
+
+	AND	shift 16
+	OR	shift 15
+	XOR	shift 14
+	EQUALS	shift 13
+	IMPLIES	shift 12
+
+	binop	goto 10
+
+	.	reduce by rule 8
+
+
+state 21:
+
+	formula : formula . binop formula 
+	formula : formula . IMPLIES formula 
+	formula : formula IMPLIES formula .  (reduce by rule 9)
+
+	AND	shift 16
+	OR	shift 15
+	XOR	shift 14
+	EQUALS	shift 13
+	IMPLIES	shift 12
+
+	binop	goto 10
+
+	.	reduce by rule 9
+
+
+state 22:
+
+	formula : LPAREN formula RPAREN .  (reduce by rule 11)
+
+
+
+	.	reduce by rule 11
+
+
+state 23:
+
+	formula : IF formula THEN . formula ELSE formula 
+
+	CONST	shift 8
+	ID	shift 7
+	NOT	shift 6
+	IF	shift 5
+	LPAREN	shift 4
+
+	formula	goto 24
+
+	.	error
+
+
+state 24:
 
 	formula : formula . binop formula 
 	formula : formula . IMPLIES formula 
 	formula : IF formula THEN formula . ELSE formula 
 
-	AND	shift 14
-	OR	shift 13
-	XOR	shift 12
-	EQUALS	shift 11
-	IMPLIES	shift 10
-	ELSE	shift 21
+	AND	shift 16
+	OR	shift 15
+	XOR	shift 14
+	EQUALS	shift 13
+	IMPLIES	shift 12
+	ELSE	shift 25
 
-	binop	goto 8
+	binop	goto 10
 
 	.	error
 
 
-state 21:
+state 25:
 
 	formula : IF formula THEN formula ELSE . formula 
 
-	CONST	shift 6
-	NOT	shift 5
-	IF	shift 4
+	CONST	shift 8
+	ID	shift 7
+	NOT	shift 6
+	IF	shift 5
+	LPAREN	shift 4
 
-	formula	goto 22
+	formula	goto 26
 
 	.	error
 
 
-state 22:
+state 26:
 
 	formula : formula . binop formula 
 	formula : formula . IMPLIES formula 
-	formula : IF formula THEN formula ELSE formula .  (reduce by rule 9)
+	formula : IF formula THEN formula ELSE formula .  (reduce by rule 10)
 
-	AND	shift 14
-	OR	shift 13
-	XOR	shift 12
-	EQUALS	shift 11
-	IMPLIES	shift 10
+	AND	shift 16
+	OR	shift 15
+	XOR	shift 14
+	EQUALS	shift 13
+	IMPLIES	shift 12
 
-	binop	goto 8
+	binop	goto 10
 
-	.	reduce by rule 9
+	.	reduce by rule 10
 
 
-state 23:
+state 27:
 
 
 	EOF	accept
@@ -328,5 +399,5 @@ state 23:
 
 	.	error
 
-45 of 90 action table entries left after compaction
-19 goto table entries
+57 of 125 action table entries left after compaction
+21 goto table entries

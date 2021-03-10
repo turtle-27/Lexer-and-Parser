@@ -1,14 +1,16 @@
-
+(* User declarations *)
+fun lookup "TRUE" = "TRUE, "
+    | lookup "FALSE" = "FALSE, "
 
 %%
 (* required declarations*)
 %name myCalc
 
 %term 
-    CONST | NOT | AND | OR | XOR | EQUALS
+    CONST of string | ID of string | NOT | AND | OR | XOR | EQUALS
 |   IMPLIES | IF | THEN | ELSE | LPAREN | RPAREN | EOF | TERM
 
-%nonterm program | statement | formula | binop | temp
+%nonterm program of string| statement of string | formula of string | binop of string | temp of string
 
 %pos int
 
@@ -26,21 +28,23 @@
 %verbose
 
 %%
-program: temp statement (temp statement)
-        | statement (statement)
+program: temp statement (temp^statement^"program gives temp statement, ")
+        | statement (statement^" program gives statement, ")
 
-temp: temp statement (temp statement)
-    | statement (statement)
+temp: temp statement (temp^statement^"temp gives temp statement, ")
+    | statement (statement^" temp gives statement, ")
     
-statement: formula TERM (formula TERM)
+statement: formula TERM (formula^" TERM ;, "^"statement gives formula TERM, ")
 
-formula: CONST (CONST)
-    |   NOT formula (NOT formula)
-    |   formula binop formula (formula1 binop formula2)
-    |   formula IMPLIES formula (formula1 IMPLIES formula2)
-    |   IF formula THEN formula ELSE formula (IF formula1 THEN formula2 ELSE formula3)
+formula: CONST ("CONST "^lookup CONST^"formula gives CONST, ")
+    |   ID ("ID "^ID^", formula gives ID, ")
+    |   NOT formula ("NOT NOT, "^formula^"formula gives NOT formula, ")
+    |   formula binop formula (formula1^binop^formula2^"formula gives formula, ")
+    |   formula IMPLIES formula (formula1^"IMPLIES IMPLIES, "^formula2^"formula gives formula IMPLIES formula, ")
+    |   IF formula THEN formula ELSE formula ("IF IF, "^formula1^"THEN THEN, "^formula2^"ELSE ELSE, "^formula3^"formula gives IF formula THEN formula ELSE formula, ")
+    |   LPAREN formula RPAREN ("LPAREN (, "^formula^"RPAREN ), formula gives LPAREN formula RPAREN, ")
 
-binop: AND (AND)
-    |  OR  (XOR)
-    |  XOR (XOR)
-    |  EQUALS (EQUALS)    
+binop: AND ("AND AND, binop gives AND, ")
+    |  OR  ("OR OR, binop gives OR, ")
+    |  XOR ("XOR XOR, binop gives XOR, ")
+    |  EQUALS ("EQUALS EQUALS, binop gives EQUALS, ")    
